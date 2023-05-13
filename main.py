@@ -1,0 +1,53 @@
+import scheduler
+import argparse
+
+ALGORITHMS = ['FIFO', 'RR', 'SRTN']
+
+DEFAULT_ALGORITHM = 'FIFO'
+DEFAULT_QUANTUM = 1
+
+def main():
+
+
+
+    parser = argparse.ArgumentParser(description='Process some integers.')
+    parser.add_argument('filename', type=str, help='name of the job file')
+
+    parser.add_argument('-p', '--algorithm',
+                            choices=ALGORITHMS,
+                            default=DEFAULT_ALGORITHM,
+                            help='scheduling algorithm to use')
+
+    parser.add_argument('-q', '--quantum',
+                            type=int,
+                            default=DEFAULT_QUANTUM,
+                            help='time quantum for rr algorithm')
+
+    args = parser.parse_args()
+
+    if args.algorithm == 'RR':
+        sched = scheduler.RR(args.filename, args.quantum)
+    elif args.algorithm == 'FIFO':
+        sched = scheduler.FIFO(args.filename)
+    elif args.algorithm == 'SRTN':
+        sched = scheduler.SRTN(args.filename)
+    else:
+        sched = scheduler.FIFO(args.filename)
+
+    sched.run()
+    sched.jobs_completed = sorted(sched.jobs_completed, key=lambda x: x.get_id())
+    avg_wait_time = 0
+    avg_turn_around = 0
+    for job in sched.jobs_completed:
+        avg_wait_time = avg_wait_time + job.get_wait_time()
+        avg_turn_around = avg_turn_around + job.turn_around
+    avg_wait_time   =   avg_wait_time   / len(sched.jobs_completed)
+    avg_turn_around =   avg_turn_around / len(sched.jobs_completed)
+    for job in sched.jobs_completed:
+        print(f"Job {job.get_id():3d} -- Turnaround {job.get_turnaround_time():3.2f}  Wait {job.get_wait_time():3.2f}")
+    print( f"Average -- Turnaround {avg_turn_around:3.2f}  Wait {avg_wait_time:3.2f}")
+    #print(sched.elaboration)
+
+
+if __name__ == '__main__':
+    main()
