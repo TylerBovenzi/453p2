@@ -1,3 +1,4 @@
+#!/usr/bin/env python3
 import scheduler
 import argparse
 
@@ -10,8 +11,8 @@ def main():
 
 
 
-    parser = argparse.ArgumentParser(description='Process some integers.')
-    parser.add_argument('filename', type=str, help='name of the job file')
+    parser = argparse.ArgumentParser(description='SCHEDULING SIMULATOR')
+    parser.add_argument('filename', type=str, help='name of the job fi:le')
 
     parser.add_argument('-p', '--algorithm',
                             choices=ALGORITHMS,
